@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Health Tracker</title>
+<link rel="stylesheet" href="style.css">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginSection" class="container">
+  <h2>Login</h2>
+  <button onclick="googleLogin()">Login with Google</button>
+  <hr>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="emailLogin()">Login</button>
+  <p id="authError" class="error"></p>
+</div>
+
+<!-- APP -->
+<div id="appSection" style="display:none;">
+
+  <header class="app-header-v2">
+    <h1 id="welcomeMessage"></h1>
+  </header>
+
+ <!-- TOP NAV -->
+<nav class="top-nav">
+  <div onclick="showTab('homePage')">Health Tracker</div>
+  <div onclick="showTab('healthPage')">Self Health Test</div>
+  <div onclick="showTab('settingsPage')">Settings</div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="homePage" class="tab-page">
+
+  <div class="profile-preview">
+    <img id="homeProfileImg" class="small-profile">
+    <div>
+      <div id="homeDisplayName"></div>
+      <div class="small-email" id="homeEmail"></div>
+    </div>
+  </div>
+
+  <div class="cards-wrapper">
+
+    <div class="card">
+      <h2>Food Log</h2>
+      <div class="input-row">
+        <input id="foodInput" placeholder="What did you eat?">
+        <button onclick="addFood()">Add</button>
+      </div>
+      <ul id="foodList"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Water Intake</h2>
+      <div class="input-row">
+        <input id="waterInput" type="number" placeholder="Water (ml)">
+        <button onclick="addWater()">Add</button>
+      </div>
+      <ul id="waterList"></ul>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- HEALTH PAGE -->
+<div id="healthPage" class="tab-page">
+
+  <div class="health-card">
+    <h2>Daily Health Check</h2>
+
+    <form id="healthForm">
+
+      <div class="rating-group">
+        <label>Gas</label>
+        <div class="radio-buttons">
+          <input type="radio" name="gas" value="1" required> 1
+          <input type="radio" name="gas" value="2"> 2
+          <input type="radio" name="gas" value="3"> 3
+          <input type="radio" name="gas" value="4"> 4
+          <input type="radio" name="gas" value="5"> 5
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Headache</label>
+        <div class="radio-buttons">
+          <input type="radio" name="headache" value="1" required> 1
+          <input type="radio" name="headache" value="2"> 2
+          <input type="radio" name="headache" value="3"> 3
+          <input type="radio" name="headache" value="4"> 4
+          <input type="radio" name="headache" value="5"> 5
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Body</label>
+        <div class="radio-buttons">
+          <input type="radio" name="body" value="1" required> 1
+          <input type="radio" name="body" value="2"> 2
+          <input type="radio" name="body" value="3"> 3
+          <input type="radio" name="body" value="4"> 4
+          <input type="radio" name="body" value="5"> 5
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Energy</label>
+        <div class="radio-buttons">
+          <input type="radio" name="energy" value="1" required> 1
+          <input type="radio" name="energy" value="2"> 2
+          <input type="radio" name="energy" value="3"> 3
+          <input type="radio" name="energy" value="4"> 4
+          <input type="radio" name="energy" value="5"> 5
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Sleep</label>
+        <div class="radio-buttons">
+          <input type="radio" name="sleep" value="1" required> 1
+          <input type="radio" name="sleep" value="2"> 2
+          <input type="radio" name="sleep" value="3"> 3
+          <input type="radio" name="sleep" value="4"> 4
+          <input type="radio" name="sleep" value="5"> 5
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Stress</label>
+        <div class="radio-buttons">
+          <input type="radio" name="stress" value="1" required> 1
+          <input type="radio" name="stress" value="2"> 2
+          <input type="radio" name="stress" value="3"> 3
+          <input type="radio" name="stress" value="4"> 4
+          <input type="radio" name="stress" value="5"> 5
+        </div>
+      </div>
+
+      <textarea id="note" placeholder="Anything to say?"></textarea>
+
+      <button type="button" onclick="saveHealth()">Save</button>
+
+    </form>
+  </div>
+
+</div>
+
+
+<!-- SETTINGS PAGE -->
+<div id="settingsPage" class="tab-page">
+
+  <div class="settings-card">
+
+    <h2>Settings</h2>
+
+    <div class="profile-section profile-v2">
+      <div class="profile-image-container">
+        <img id="profileImage" class="profile-img">
+        <label class="edit-profile-image">
+          <input type="file" onchange="changeProfileImage(event)" disabled>
+          ✏️
+        </label>
+      </div>
+      <div class="profile-meta">
+        <input id="displayNameInput" placeholder="Display Name" disabled>
+        <p id="emailDisplay" class="small-email"></p>
+      </div>
+      <div class="profile-actions">
+        <button id="editProfileBtn" onclick="toggleEditProfile()">Edit</button>
+        <button id="saveProfileBtn" onclick="saveProfile()" style="display:none;">Save</button>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="settings-option" onclick="downloadExcel()">Download CSV</div>
+    <div class="settings-option" onclick="toggleTheme()">Toggle Dark Mode</div>
+    <div class="settings-option" onclick="logout()">Logout</div>
+
+    <hr>
+
+    <div class="info-section">
+      <p>Version: 1.0.1</p>
+      <p>Account Created: <span id="createdDate"></span></p>
+      <p>Last Login: <span id="lastLogin"></span></p>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<script src="script.js"></script>
+</body>
+
+</html>
