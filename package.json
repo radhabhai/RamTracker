@@ -1,0 +1,19 @@
+{
+  "name": "food-tracker",
+  "version": "1.0.0",
+  "description": "A simple food tracker application",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -c-1"
+  },
+  "keywords": [
+    "food",
+    "tracker",
+    "health"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
